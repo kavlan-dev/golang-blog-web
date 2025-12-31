@@ -1,81 +1,80 @@
-/* Основные стили */
 body {
     background-color: #f8f9fa;
-    transition: background-color 0.3s, color 0.3s;
-    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.post-card {
-    transition: transform 0.2s, box-shadow 0.2s;
-    margin-bottom: 20px;
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.container {
+    max-width: 1200px;
 }
 
-.post-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.post-card .card-header {
-    background-color: rgba(0, 0, 0, 0.03);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+h1 {
+    color: #343a40;
     font-weight: 600;
 }
 
-.post-card .card-body {
-    padding: 1.5rem;
+h2 {
+    color: #495057;
+    font-weight: 500;
+    margin-bottom: 1rem;
 }
 
-.post-card .card-footer {
-    background-color: transparent;
-    border-top: 1px solid rgba(0, 0, 0, 0.125);
-    padding: 0.75rem 1.5rem;
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.post-item {
+    border-left: 4px solid #0d6efd;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.post-title {
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 5px;
+}
+
+.post-content {
+    color: #6c757d;
+    font-size: 0.9rem;
 }
 
 .post-actions {
+    margin-top: 10px;
     display: flex;
     gap: 10px;
 }
 
-.post-meta {
-    font-size: 0.875rem;
-    color: #6c757d;
-    margin-top: 0.5rem;
-}
-
-.spinner-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 200px;
-}
-
-/* Анимация для кнопок */
-.btn {
-    transition: all 0.2s;
-}
-
-/* Стили для форм */
-.form-control:focus {
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-    border-color: #86b7fe;
-}
-
-/* Стили для модальных окон */
-.modal-content {
-    border-radius: 10px;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-}
-
-/* Стили для заголовка */
-.display-4 {
-    font-weight: 700;
+.btn-edit {
+    background-color: #ffc107;
+    border-color: #ffc107;
     color: #212529;
 }
 
-/* Стили для иконок */
-.bi {
-    margin-right: 6px;
+.btn-edit:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-delete:hover {
+    background-color: #bb2d3b;
+    border-color: #b02a37;
+}
+
+#edit-post-form {
+    display: none;
 }

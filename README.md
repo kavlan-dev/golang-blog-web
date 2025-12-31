@@ -23,12 +23,9 @@ golang-blog-web/
 ├── frontend/               # Фронтенд приложение
 │   ├── index.html          # Основная HTML страница
 │   ├── css/                # Стили
-│   │   ├── styles.css      # Основные стили
-│   │   └── dark-theme.css  # Темная тема
+│   │   └── styles.css
 │   └── js/                 # JavaScript
-│       ├── api.js          # Взаимодействие с API
-│       ├── ui.js           # UI логика
-│       └── main.js         # Основное приложение
+│       └── main.js
 └── internal/
     ├── models/
     │   └── post.go          # Модель записи блога
