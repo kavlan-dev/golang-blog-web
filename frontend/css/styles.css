@@ -1,0 +1,81 @@
+/* Основные стили */
+body {
+    background-color: #f8f9fa;
+    transition: background-color 0.3s, color 0.3s;
+    min-height: 100vh;
+}
+
+.post-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.post-card .card-header {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    font-weight: 600;
+}
+
+.post-card .card-body {
+    padding: 1.5rem;
+}
+
+.post-card .card-footer {
+    background-color: transparent;
+    border-top: 1px solid rgba(0, 0, 0, 0.125);
+    padding: 0.75rem 1.5rem;
+}
+
+.post-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.post-meta {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.5rem;
+}
+
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+/* Анимация для кнопок */
+.btn {
+    transition: all 0.2s;
+}
+
+/* Стили для форм */
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    border-color: #86b7fe;
+}
+
+/* Стили для модальных окон */
+.modal-content {
+    border-radius: 10px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Стили для заголовка */
+.display-4 {
+    font-weight: 700;
+    color: #212529;
+}
+
+/* Стили для иконок */
+.bi {
+    margin-right: 6px;
+}
