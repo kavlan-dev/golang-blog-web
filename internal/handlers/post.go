@@ -2,57 +2,46 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
+	"golang-blog-web/internal/models"
 	"net/http"
 	"strconv"
-
-	"golang-blog-web/internal/services"
 )
 
-// PostHandler обрабатывает HTTP запросы для работы с записями блога
-type PostHandler struct {
-	service *services.PostService
+type PostsService interface {
+	CreatePost(newPost *models.Post) error
+	GetAllPosts() *[]models.Post
+	GetPostByID(id uint) (*models.Post, error)
+	UpdatePost(id uint, updatePost *models.Post) error
+	DeletePost(id uint) error
 }
 
-// NewPostHandler создает новый экземпляр хендлера
-func NewPostHandler(service *services.PostService) *PostHandler {
-	return &PostHandler{
-		service: service,
-	}
-}
-
-// CreatePostHandler обрабатывает создание новой записи
 func (h *PostHandler) CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
 		return
 	}
 
-	var request struct {
-		Title   string `json:"title"`
-		Content string `json:"content"`
-	}
-
-	err := json.NewDecoder(r.Body).Decode(&request)
-	if err != nil {
-		log.Printf("Ошибка декодирования JSON: %v", err)
+	var req models.PostRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "некорректный JSON", http.StatusBadRequest)
 		return
 	}
 
-	post, err := h.service.CreatePost(request.Title, request.Content)
-	if err != nil {
-		log.Printf("Ошибка создания записи: %v", err)
+	newPost := &models.Post{
+		Title:   req.Title,
+		Content: req.Content,
+	}
+
+	if err := h.service.CreatePost(newPost); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(post)
+	json.NewEncoder(w).Encode(newPost)
 }
 
-// GetPostHandler возвращает все записи или запись по id
 func (h *PostHandler) GetPostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
@@ -74,9 +63,8 @@ func (h *PostHandler) GetPostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	post, err := h.service.GetPostByID(id)
+	post, err := h.service.GetPostByID(uint(id))
 	if err != nil {
-		log.Printf("Ошибка получения записи: %v", err)
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
@@ -85,7 +73,6 @@ func (h *PostHandler) GetPostHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(post)
 }
 
-// UpdatePostHandler обновляет запись
 func (h *PostHandler) UpdatePostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
@@ -104,30 +91,26 @@ func (h *PostHandler) UpdatePostHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	var request struct {
-		Title   string `json:"title"`
-		Content string `json:"content"`
-	}
-
-	err = json.NewDecoder(r.Body).Decode(&request)
-	if err != nil {
-		log.Printf("Ошибка декодирования JSON: %v", err)
+	var req models.PostRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "некорректный JSON", http.StatusBadRequest)
 		return
 	}
 
-	post, err := h.service.UpdatePost(id, request.Title, request.Content)
-	if err != nil {
-		log.Printf("Ошибка обновления записи: %v", err)
+	updatePost := &models.Post{
+		Title:   req.Title,
+		Content: req.Content,
+	}
+
+	if err := h.service.UpdatePost(uint(id), updatePost); err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(post)
+	json.NewEncoder(w).Encode(updatePost)
 }
 
-// DeletePostHandler удаляет запись
 func (h *PostHandler) DeletePostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
@@ -146,9 +129,8 @@ func (h *PostHandler) DeletePostHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	err = h.service.DeletePost(id)
+	err = h.service.DeletePost(uint(id))
 	if err != nil {
-		log.Printf("Ошибка удаления записи: %v", err)
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}

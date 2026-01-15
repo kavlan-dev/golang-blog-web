@@ -8,42 +8,23 @@ import (
 	"golang-blog-web/internal/handlers"
 	"golang-blog-web/internal/middleware"
 	"golang-blog-web/internal/services"
+	"golang-blog-web/internal/storage/memory"
 )
 
 func main() {
-	// Загрузка конфигурации
 	cfg := config.LoadConfig()
 
-	// Инициализация сервиса для работы с записями
-	postService := services.NewPostService()
+	storage := memory.New()
+	service := services.New(storage)
+	handler := handlers.New(service)
 
-	// Инициализация хендлера
-	postHandler := handlers.NewPostHandler(postService)
-
-	// Создаем основной маршрутизатор
 	mux := http.NewServeMux()
 
-	// Настройка маршрутов
-	mux.HandleFunc("/api/posts/", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodPost:
-			postHandler.CreatePostHandler(w, r)
-		case http.MethodGet:
-			postHandler.GetPostHandler(w, r)
-		case http.MethodPut:
-			postHandler.UpdatePostHandler(w, r)
-		case http.MethodDelete:
-			postHandler.DeletePostHandler(w, r)
-		}
-	})
+	mux.HandleFunc("GET /health/", handler.HealthCheck)
+	mux.HandleFunc("POST /api/posts", handler.CreatePostHandler)
+	mux.HandleFunc("GET /api/posts/", handler.GetPostHandler)
+	mux.HandleFunc("PUT /api/posts", handler.UpdatePostHandler)
+	mux.HandleFunc("DELETE /api/posts", handler.DeletePostHandler)
 
-	// Запуск сервера с CORS middleware
-	log.Printf("Запуск сервера на порту %s...", cfg.ServerPort)
-	log.Printf("API блога доступен по адресу: http://%s", cfg.GetServerAddress())
-
-	// Оборачиваем весь маршрутизатор в CORS middleware и запускаем сервер
-	err := http.ListenAndServe(cfg.GetServerAddress(), middleware.CORSMiddleware(cfg, mux))
-	if err != nil {
-		log.Fatalf("Ошибка запуска сервера: %v", err)
-	}
+	log.Fatalf("Ошибка запуска сервера: %v", http.ListenAndServe(config.GetServerAddress(cfg), middleware.CORSMiddleware(cfg, mux)))
 }

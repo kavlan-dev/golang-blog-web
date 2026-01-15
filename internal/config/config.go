@@ -6,35 +6,30 @@ import (
 	"strconv"
 )
 
-// Config содержит конфигурацию приложения
 type Config struct {
 	ServerHost        string
 	ServerPort        string
 	CORSAllowedOrigin string
 }
 
-// LoadConfig загружает конфигурацию из переменных окружения или использует значения по умолчанию
 func LoadConfig() *Config {
-	// Загрузка хоста сервера
 	host := os.Getenv("SERVER_HOST")
 	if host == "" {
-		host = "localhost" // Значение по умолчанию
+		host = "localhost"
 		log.Printf("Используется хост по умолчанию: %s", host)
 	}
 
-	// Загрузка порта сервера
 	port := os.Getenv("SERVER_PORT")
 	if port == "" {
-		port = "8080" // Значение по умолчанию
+		port = "8080"
 		log.Printf("Используется порт по умолчанию: %s", port)
 	} else if _, err := strconv.Atoi(port); err != nil {
 		log.Fatalf("Некорректный порт: %v", err)
 	}
 
-	// Загрузка разрешенного origin для CORS
 	corsOrigin := os.Getenv("CORS_ALLOWED_ORIGIN")
 	if corsOrigin == "" {
-		corsOrigin = "*" // Значение по умолчанию
+		corsOrigin = "*"
 		log.Printf("Используется CORS origin по умолчанию: %s", corsOrigin)
 	}
 
@@ -45,7 +40,6 @@ func LoadConfig() *Config {
 	}
 }
 
-// GetServerAddress возвращает полный адрес сервера
-func (c *Config) GetServerAddress() string {
-	return c.ServerHost + ":" + c.ServerPort
+func GetServerAddress(cgf *Config) string {
+	return cgf.ServerHost + ":" + cgf.ServerPort
 }
