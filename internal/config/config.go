@@ -10,6 +10,8 @@ type Config struct {
 	ServerHost        string
 	ServerPort        string
 	CORSAllowedOrigin string
+	AuthUsername      string
+	AuthPassword      string
 }
 
 func LoadConfig() *Config {
@@ -33,10 +35,24 @@ func LoadConfig() *Config {
 		log.Printf("Используется CORS origin по умолчанию: %s", corsOrigin)
 	}
 
+	authUsername := os.Getenv("AUTH_USERNAME")
+	if authUsername == "" {
+		authUsername = "admin"
+		log.Printf("Используется имя пользователя по умолчанию: %s", authUsername)
+	}
+
+	authPassword := os.Getenv("AUTH_PASSWORD")
+	if authPassword == "" {
+		authPassword = "admin"
+		log.Printf("Используется пароль по умолчанию: %s", authPassword)
+	}
+
 	return &Config{
 		ServerHost:        host,
 		ServerPort:        port,
 		CORSAllowedOrigin: corsOrigin,
+		AuthUsername:      authUsername,
+		AuthPassword:      authPassword,
 	}
 }
 

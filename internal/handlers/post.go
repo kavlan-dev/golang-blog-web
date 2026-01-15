@@ -79,7 +79,7 @@ func (h *PostHandler) UpdatePostHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	idStr := r.URL.Path[len("/api/posts/"):]
+	idStr := r.URL.Path[len("/api/secure/posts/"):]
 	if idStr == "" {
 		http.Error(w, "отсутствует id записи", http.StatusBadRequest)
 		return
@@ -117,7 +117,7 @@ func (h *PostHandler) DeletePostHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	idStr := r.URL.Path[len("/api/posts/"):]
+	idStr := r.URL.Path[len("/api/secure/posts/"):]
 	if idStr == "" {
 		http.Error(w, "отсутствует параметр id", http.StatusBadRequest)
 		return
