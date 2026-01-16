@@ -255,7 +255,9 @@ golang-blog-web/
     │   ├── handlers.go
     │   └── post.go
     ├── middleware/         # HTTP middleware
-    │   └── cors.go
+    │   ├── auth.go
+    │   ├── cors.go
+    │   └── role.go
     └── storage/            # Хранилище данных
         └── memory/         # Хранилище в памяти
             ├── memory.go

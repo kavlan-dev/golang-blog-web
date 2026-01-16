@@ -2,12 +2,14 @@ package services
 
 import (
 	"fmt"
+	"golang-blog-web/internal/config"
 	"golang-blog-web/internal/models"
 )
 
 type UsersStorage interface {
 	CreateUser(user *models.User) error
 	GetUserByUsername(username string) (*models.User, error)
+	UpdateUser(id uint, updateUser *models.User) error
 }
 
 func (s *Service) CreateUser(newUser *models.User) error {
@@ -33,4 +35,21 @@ func (s *Service) AuthenticateUser(username, password string) (*models.User, err
 	}
 
 	return user, nil
+}
+
+func (s *Service) CreateFirstAdmin(cfg *config.Config) error {
+	return s.storage.CreateUser(&models.User{
+		Username: cfg.AdminUsername,
+		Password: cfg.AdminPassword,
+		Email:    cfg.AdminEmail,
+		Role:     "admin",
+	})
+}
+
+func (s *Service) UpdateUser(id uint, updateUser *models.User) error {
+	if err := updateUser.Validate(); err != nil {
+		return err
+	}
+
+	return s.UpdateUser(id, updateUser)
 }

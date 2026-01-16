@@ -19,12 +19,6 @@ type PostRequest struct {
 	Content string `json:"content"`
 }
 
-type PostResponse struct {
-	ID      uint   `json:"id"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
-}
-
 func (p *Post) Validate() error {
 	if strings.TrimSpace(p.Title) == "" {
 		return fmt.Errorf("заголовок не может быть пустым")

@@ -11,14 +11,20 @@ type User struct {
 	Username  string    `json:"username"`
 	Password  string    `json:"password"`
 	Email     string    `json:"email"`
-	Role      string    `json:"role"`
+	Role      string    `json:"role"` // user, admin
 	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type RegisterRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Email    string `json:"email"`
+	// Role     string `json:"role"`
+}
+
+type UpdateUserRequest struct {
+	Role string `json:"role"`
 }
 
 func (u *User) Validate() error {

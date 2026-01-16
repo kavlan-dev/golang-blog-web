@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"golang-blog-web/internal/models"
 	"strings"
+	"time"
 )
 
 func (s *Storage) isUserUnique(username, email string, excludeID uint) bool {
@@ -41,4 +42,25 @@ func (s *Storage) GetUserByUsername(username string) (*models.User, error) {
 		}
 	}
 	return nil, fmt.Errorf("Пользователь не найден")
+}
+
+func (s *Storage) UpdateUser(id uint, updateUser *models.User) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	user, exists := s.users[id]
+	if !exists {
+		return fmt.Errorf("пользователь с id %d не найден", id)
+	}
+
+	if !s.isUserUnique(user.Username, user.Email, id) {
+		return fmt.Errorf("пользователь с таким именем или почтой уже существует")
+	}
+
+	user.Role = updateUser.Role
+	user.UpdatedAt = time.Now()
+
+	s.users[id] = user
+
+	return nil
 }

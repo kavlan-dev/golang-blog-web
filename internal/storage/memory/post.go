@@ -48,7 +48,7 @@ func (s *Storage) FindPosts() *[]models.Post {
 	return &allPosts
 }
 
-func (s *Storage) FindPostBiId(id uint) (*models.Post, error) {
+func (s *Storage) FindPostById(id uint) (*models.Post, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 

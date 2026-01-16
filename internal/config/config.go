@@ -7,6 +7,9 @@ import (
 )
 
 type Config struct {
+	AdminUsername     string
+	AdminPassword     string
+	AdminEmail        string
 	ServerHost        string
 	ServerPort        string
 	CORSAllowedOrigin string
@@ -33,19 +36,28 @@ func LoadConfig() *Config {
 		log.Printf("Используется CORS origin по умолчанию: %s", corsOrigin)
 	}
 
-	authUsername := os.Getenv("AUTH_USERNAME")
-	if authUsername == "" {
-		authUsername = "admin"
-		log.Printf("Используется имя пользователя по умолчанию: %s", authUsername)
+	adminUsername := os.Getenv("USERNAME")
+	if adminUsername == "" {
+		adminUsername = "admin"
+		log.Printf("Используется имя пользователя по умолчанию: %s", adminUsername)
 	}
 
-	authPassword := os.Getenv("AUTH_PASSWORD")
-	if authPassword == "" {
-		authPassword = "admin"
-		log.Printf("Используется пароль по умолчанию: %s", authPassword)
+	adminPassword := os.Getenv("PASSWORD")
+	if adminPassword == "" {
+		adminPassword = "admin"
+		log.Printf("Используется пароль по умолчанию: %s", adminPassword)
+	}
+
+	adminEmail := os.Getenv("EMAIL")
+	if adminEmail == "" {
+		adminEmail = "admin"
+		log.Printf("Используется почта по умолчанию: %s", adminEmail)
 	}
 
 	return &Config{
+		AdminUsername:     adminUsername,
+		AdminPassword:     adminPassword,
+		AdminEmail:        adminEmail,
 		ServerHost:        host,
 		ServerPort:        port,
 		CORSAllowedOrigin: corsOrigin,

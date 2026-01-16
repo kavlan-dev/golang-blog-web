@@ -7,7 +7,7 @@ import (
 type PostsStorage interface {
 	CreatePost(newPost *models.Post) error
 	FindPosts() *[]models.Post
-	FindPostBiId(id uint) (*models.Post, error)
+	FindPostById(id uint) (*models.Post, error)
 	UpdatePost(id uint, updatePost *models.Post) error
 	DeletePost(id uint) error
 }
@@ -25,7 +25,7 @@ func (s *Service) GetAllPosts() *[]models.Post {
 }
 
 func (s *Service) GetPostByID(id uint) (*models.Post, error) {
-	return s.storage.FindPostBiId(id)
+	return s.storage.FindPostById(id)
 }
 
 func (s *Service) UpdatePost(id uint, updatePost *models.Post) error {
