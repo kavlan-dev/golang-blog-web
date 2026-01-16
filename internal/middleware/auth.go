@@ -15,14 +15,12 @@ func AuthMiddleware(cfg *config.Config, next http.Handler) http.Handler {
 			return
 		}
 
-		// Проверка учетных данных из конфигурации
 		if user != cfg.AuthUsername || pass != cfg.AuthPassword {
 			w.Header().Set("WWW-Authenticate", `Basic realm="restricted"`)
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
 
-		// Если аутентификация прошла успешно, передаем запрос дальше
 		next.ServeHTTP(w, r)
 	})
 }

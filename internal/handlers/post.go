@@ -15,7 +15,7 @@ type PostsService interface {
 	DeletePost(id uint) error
 }
 
-func (h *PostHandler) CreatePostHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
 		return
@@ -42,7 +42,7 @@ func (h *PostHandler) CreatePostHandler(w http.ResponseWriter, r *http.Request) 
 	json.NewEncoder(w).Encode(newPost)
 }
 
-func (h *PostHandler) GetPostHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetPostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
 		return
@@ -73,7 +73,7 @@ func (h *PostHandler) GetPostHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(post)
 }
 
-func (h *PostHandler) UpdatePostHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) UpdatePostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
 		return
@@ -111,7 +111,7 @@ func (h *PostHandler) UpdatePostHandler(w http.ResponseWriter, r *http.Request) 
 	json.NewEncoder(w).Encode(updatePost)
 }
 
-func (h *PostHandler) DeletePostHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) DeletePostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
 		return
