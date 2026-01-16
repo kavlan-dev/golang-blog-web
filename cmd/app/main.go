@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 
 	"golang-blog-web/internal/config"
@@ -9,18 +8,24 @@ import (
 	"golang-blog-web/internal/middleware"
 	"golang-blog-web/internal/services"
 	"golang-blog-web/internal/storage/memory"
+	"golang-blog-web/internal/utils"
 )
 
 func main() {
-	cfg := config.LoadConfig()
+	log := utils.NewLogger()
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		log.Error("Ошибка загрузки настроек", utils.Err(err))
+		return
+	}
 
 	storage := memory.New()
 	service := services.New(storage)
-	handler := handlers.New(service)
+	handler := handlers.New(service, log)
 
-	err := service.CreateFirstAdmin(cfg)
-	if err != nil {
-		log.Fatal("Не удалось создать администратора")
+	if err := service.CreateFirstAdmin(cfg); err != nil {
+		log.Error("Не удалось создать администратора", utils.Err(err))
+		return
 	}
 
 	mainMux := http.NewServeMux()
@@ -44,5 +49,9 @@ func main() {
 	combinedMux.Handle("POST /api/posts", authHandler)
 	combinedMux.Handle("/api/secure/", adminHandler)
 
-	log.Fatalf("Ошибка запуска сервера: %v", http.ListenAndServe(config.GetServerAddress(cfg), middleware.CORSMiddleware(cfg, combinedMux)))
+	err = http.ListenAndServe(config.GetServerAddress(cfg), middleware.CORSMiddleware(cfg, combinedMux))
+	if err != nil {
+		log.Error("Ошибка запуска сервера", utils.Err(err))
+		return
+	}
 }

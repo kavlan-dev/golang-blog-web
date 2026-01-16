@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 )
 
@@ -14,10 +15,14 @@ type ServicesInterface interface {
 
 type Handler struct {
 	service ServicesInterface
+	log     *slog.Logger
 }
 
-func New(service ServicesInterface) *Handler {
-	return &Handler{service: service}
+func New(service ServicesInterface, log *slog.Logger) *Handler {
+	return &Handler{
+		service: service,
+		log:     log,
+	}
 }
 
 func (h *Handler) HealthCheck(w http.ResponseWriter, r *http.Request) {

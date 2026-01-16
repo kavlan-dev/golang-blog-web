@@ -1,7 +1,6 @@
 package config
 
 import (
-	"log"
 	"os"
 	"strconv"
 )
@@ -15,43 +14,37 @@ type Config struct {
 	CORSAllowedOrigin string
 }
 
-func LoadConfig() *Config {
+func LoadConfig() (*Config, error) {
 	host := os.Getenv("SERVER_HOST")
 	if host == "" {
 		host = "localhost"
-		log.Printf("Используется хост по умолчанию: %s", host)
 	}
 
 	port := os.Getenv("SERVER_PORT")
 	if port == "" {
 		port = "8080"
-		log.Printf("Используется порт по умолчанию: %s", port)
 	} else if _, err := strconv.Atoi(port); err != nil {
-		log.Fatalf("Некорректный порт: %v", err)
+		return nil, err
 	}
 
 	corsOrigin := os.Getenv("CORS_ALLOWED_ORIGIN")
 	if corsOrigin == "" {
 		corsOrigin = "*"
-		log.Printf("Используется CORS origin по умолчанию: %s", corsOrigin)
 	}
 
-	adminUsername := os.Getenv("USERNAME")
+	adminUsername := os.Getenv("ADMIN_USERNAME")
 	if adminUsername == "" {
 		adminUsername = "admin"
-		log.Printf("Используется имя пользователя по умолчанию: %s", adminUsername)
 	}
 
-	adminPassword := os.Getenv("PASSWORD")
+	adminPassword := os.Getenv("ADMIN_PASSWORD")
 	if adminPassword == "" {
 		adminPassword = "admin"
-		log.Printf("Используется пароль по умолчанию: %s", adminPassword)
 	}
 
-	adminEmail := os.Getenv("EMAIL")
+	adminEmail := os.Getenv("ADMIN_EMAIL")
 	if adminEmail == "" {
 		adminEmail = "admin"
-		log.Printf("Используется почта по умолчанию: %s", adminEmail)
 	}
 
 	return &Config{
@@ -61,7 +54,7 @@ func LoadConfig() *Config {
 		ServerHost:        host,
 		ServerPort:        port,
 		CORSAllowedOrigin: corsOrigin,
-	}
+	}, nil
 }
 
 func GetServerAddress(cgf *Config) string {
