@@ -1,8 +1,6 @@
 package services
 
-import (
-	"golang-blog-web/internal/models"
-)
+import "go-blog-web/internal/models"
 
 type PostsStorage interface {
 	CreatePost(newPost *models.Post) error

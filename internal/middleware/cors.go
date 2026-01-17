@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"golang-blog-web/internal/config"
+	"go-blog-web/internal/config"
 	"net/http"
 )
 

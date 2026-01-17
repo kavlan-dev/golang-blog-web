@@ -1,14 +1,13 @@
 package main
 
 import (
+	"go-blog-web/internal/config"
+	"go-blog-web/internal/handlers"
+	"go-blog-web/internal/middleware"
+	"go-blog-web/internal/services"
+	"go-blog-web/internal/storage/memory"
+	"go-blog-web/internal/utils"
 	"net/http"
-
-	"golang-blog-web/internal/config"
-	"golang-blog-web/internal/handlers"
-	"golang-blog-web/internal/middleware"
-	"golang-blog-web/internal/services"
-	"golang-blog-web/internal/storage/memory"
-	"golang-blog-web/internal/utils"
 )
 
 func main() {

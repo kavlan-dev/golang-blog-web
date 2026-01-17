@@ -3,7 +3,7 @@ package memory
 import (
 	"errors"
 	"fmt"
-	"golang-blog-web/internal/models"
+	"go-blog-web/internal/models"
 	"strings"
 	"time"
 )

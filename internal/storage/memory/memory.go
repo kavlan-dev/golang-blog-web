@@ -1,7 +1,7 @@
 package memory
 
 import (
-	"golang-blog-web/internal/models"
+	"go-blog-web/internal/models"
 	"sync"
 )
 

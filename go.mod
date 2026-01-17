@@ -1,3 +1,3 @@
-module golang-blog-web
+module go-blog-web
 
-go 1.24.9
+go 1.25.5

@@ -1,9 +1,8 @@
 package middleware
 
 import (
+	"go-blog-web/internal/services"
 	"net/http"
-
-	"golang-blog-web/internal/services"
 )
 
 func AuthMiddleware(service *services.Service, next http.HandlerFunc) http.HandlerFunc {

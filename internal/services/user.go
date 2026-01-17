@@ -2,8 +2,8 @@ package services
 
 import (
 	"fmt"
-	"golang-blog-web/internal/config"
-	"golang-blog-web/internal/models"
+	"go-blog-web/internal/config"
+	"go-blog-web/internal/models"
 )
 
 type UsersStorage interface {

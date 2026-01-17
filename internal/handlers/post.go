@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"encoding/json"
-	"golang-blog-web/internal/models"
-	"golang-blog-web/internal/utils"
+	"go-blog-web/internal/models"
+	"go-blog-web/internal/utils"
 	"log/slog"
 	"net/http"
 	"strconv"
