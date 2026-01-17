@@ -6,10 +6,11 @@ import (
 )
 
 type Storage struct {
-	posts  map[uint]*models.Post
-	users  map[uint]*models.User
-	mu     sync.Mutex
-	nextID uint
+	posts      map[uint]*models.Post
+	users      map[uint]*models.User
+	mu         sync.Mutex
+	nextPostId uint
+	nextUserId uint
 }
 
 func New() *Storage {

@@ -6,8 +6,8 @@ import (
 	"golang-blog-web/internal/services"
 )
 
-func AuthMiddleware(service *services.Service, next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func AuthMiddleware(service *services.Service, next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		name, pass, ok := r.BasicAuth()
 		if !ok {
 			w.Header().Set("WWW-Authenticate", `Basic realm="restricted"`)
@@ -23,5 +23,5 @@ func AuthMiddleware(service *services.Service, next http.Handler) http.Handler {
 		}
 
 		next.ServeHTTP(w, r)
-	})
+	}
 }

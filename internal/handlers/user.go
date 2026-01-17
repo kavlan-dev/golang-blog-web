@@ -54,13 +54,7 @@ func (h *Handler) UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	idStr := r.URL.Path[len("/api/secure/users/"):]
-	if idStr == "" {
-		h.log.Error("Отсутствует id")
-		http.Error(w, "отсутствует id записи", http.StatusBadRequest)
-		return
-	}
-
+	idStr := r.PathValue("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		h.log.Error("Не верный ввод id", utils.Err(err))

@@ -17,7 +17,7 @@ type PostsService interface {
 	DeletePost(id uint) error
 }
 
-func (h *Handler) CreatePostHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) CreatePost(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		h.log.Warn("Использован не подходящий метод", slog.String("method", r.Method))
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
@@ -48,23 +48,28 @@ func (h *Handler) CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newPost)
 }
 
-func (h *Handler) GetPostHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Posts(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		h.log.Warn("Использован не подходящий метод", slog.String("method", r.Method))
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
 		return
 	}
 
-	idStr := r.URL.Path[len("/api/posts/"):]
-	if idStr == "" {
-		posts := h.service.GetAllPosts()
+	posts := h.service.GetAllPosts()
 
-		h.log.Info("Получены все записи")
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(posts)
+	h.log.Info("Получены все записи")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(posts)
+}
+
+func (h *Handler) PostById(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		h.log.Warn("Использован не подходящий метод", slog.String("method", r.Method))
+		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
 		return
 	}
 
+	idStr := r.PathValue("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		h.log.Error("Не верный ввод id", utils.Err(err))
@@ -79,25 +84,19 @@ func (h *Handler) GetPostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.log.Info("Успешно получена запись", slog.String("post id", idStr))
+	h.log.Info("Успешно получена запись", slog.Int("post id", id))
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(post)
 }
 
-func (h *Handler) UpdatePostHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) UpdatePost(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
 		h.log.Warn("Использован не подходящий метод", slog.String("method", r.Method))
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
 		return
 	}
 
-	idStr := r.URL.Path[len("/api/secure/posts/"):]
-	if idStr == "" {
-		h.log.Error("Отсутствует id")
-		http.Error(w, "отсутствует id записи", http.StatusBadRequest)
-		return
-	}
-
+	idStr := r.PathValue("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		h.log.Error("Не верный ввод id", utils.Err(err))
@@ -123,25 +122,19 @@ func (h *Handler) UpdatePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.log.Info("Успешно обновлена запись", slog.String("post id", idStr))
+	h.log.Info("Успешно обновлена запись", slog.Int("post id", id))
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(updatePost)
 }
 
-func (h *Handler) DeletePostHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) DeletePost(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		h.log.Warn("Использован не подходящий метод", slog.String("method", r.Method))
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
 		return
 	}
 
-	idStr := r.URL.Path[len("/api/secure/posts/"):]
-	if idStr == "" {
-		h.log.Error("Отсутствует id")
-		http.Error(w, "отсутствует параметр id", http.StatusBadRequest)
-		return
-	}
-
+	idStr := r.PathValue("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		h.log.Error("Не верный ввод id", utils.Err(err))
@@ -156,6 +149,6 @@ func (h *Handler) DeletePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.log.Info("Успешно удалена запись", slog.String("post id", idStr))
+	h.log.Info("Успешно удалена запись", slog.Int("post id", id))
 	w.WriteHeader(http.StatusNoContent)
 }

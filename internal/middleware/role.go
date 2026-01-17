@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-func AuthAdminMiddleware(service *services.Service, next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func AuthAdminMiddleware(service *services.Service, next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		name, pass, ok := r.BasicAuth()
 		if !ok {
 			w.Header().Set("WWW-Authenticate", `Basic realm="restricted"`)
@@ -23,10 +23,10 @@ func AuthAdminMiddleware(service *services.Service, next http.Handler) http.Hand
 
 		if user.Role != "admin" {
 			w.Header().Set("WWW-Authenticate", `Basic realm="restricted"`)
-			http.Error(w, "Unauthorized", http.StatusForbidden)
+			http.Error(w, "Не достаточно прав", http.StatusForbidden)
 			return
 		}
 
 		next.ServeHTTP(w, r)
-	})
+	}
 }

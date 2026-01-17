@@ -20,14 +20,17 @@ func (s *Storage) CreateUser(newUser *models.User) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
+	newUser.ID = s.nextUserId
 	ok := s.isUserUnique(newUser.Username, newUser.Email, newUser.ID)
 	if !ok {
 		return fmt.Errorf("")
 	}
 
-	s.nextID++
-	newUser.ID = s.nextID
+	newUser.CreatedAt = time.Now()
+	newUser.UpdatedAt = time.Now()
+
 	s.users[newUser.ID] = newUser
+	s.nextUserId++
 
 	return nil
 }

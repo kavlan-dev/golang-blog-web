@@ -28,28 +28,19 @@ func main() {
 		return
 	}
 
-	mainMux := http.NewServeMux()
-	mainMux.HandleFunc("GET /health", handler.HealthCheck)
-	mainMux.HandleFunc("GET /api/posts/", handler.GetPostHandler)
-	mainMux.HandleFunc("POST /api/auth/register", handler.CreateUserHandler)
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /health/", handler.HealthCheck)
+	mux.HandleFunc("GET /api/posts/", handler.Posts)
+	mux.HandleFunc("GET /api/posts/{id}/", handler.PostById)
+	mux.HandleFunc("POST /api/auth/register/", handler.CreateUserHandler)
 
-	authMux := http.NewServeMux()
-	authMux.HandleFunc("POST /api/posts", handler.CreatePostHandler)
+	mux.HandleFunc("POST /api/posts/", middleware.AuthMiddleware(service, handler.CreatePost))
 
-	adminMux := http.NewServeMux()
-	adminMux.HandleFunc("PUT /api/secure/posts/", handler.UpdatePostHandler)
-	adminMux.HandleFunc("DELETE /api/secure/posts/", handler.DeletePostHandler)
-	adminMux.HandleFunc("PUT /api/secure/users/", handler.UpdateUserHandler)
+	mux.HandleFunc("PUT /api/secure/posts/{id}/", middleware.AuthAdminMiddleware(service, handler.UpdatePost))
+	mux.HandleFunc("DELETE /api/secure/posts/{id}/", middleware.AuthAdminMiddleware(service, handler.DeletePost))
+	mux.HandleFunc("PUT /api/secure/users/{id}/", middleware.AuthAdminMiddleware(service, handler.UpdateUserHandler))
 
-	authHandler := middleware.AuthMiddleware(service, authMux)
-	adminHandler := middleware.AuthAdminMiddleware(service, adminMux)
-
-	combinedMux := http.NewServeMux()
-	combinedMux.Handle("/", mainMux)
-	combinedMux.Handle("POST /api/posts", authHandler)
-	combinedMux.Handle("/api/secure/", adminHandler)
-
-	err = http.ListenAndServe(config.GetServerAddress(cfg), middleware.CORSMiddleware(cfg, combinedMux))
+	err = http.ListenAndServe(config.GetServerAddress(cfg), middleware.CORSMiddleware(cfg, mux))
 	if err != nil {
 		log.Error("Ошибка запуска сервера", utils.Err(err))
 		return

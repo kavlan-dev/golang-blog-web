@@ -21,17 +21,17 @@ func (s *Storage) CreatePost(newPost *models.Post) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
+	newPost.ID = s.nextPostId
 	ok := s.isTitleUnique(newPost.Title, newPost.ID)
 	if ok != true {
 		return fmt.Errorf("Запись с таким заголовком уже существует")
 	}
 
-	newPost.ID = s.nextID
 	newPost.CreatedAt = time.Now()
 	newPost.UpdatedAt = time.Now()
 
-	s.posts[s.nextID] = newPost
-	s.nextID++
+	s.posts[s.nextPostId] = newPost
+	s.nextPostId++
 
 	return nil
 }
