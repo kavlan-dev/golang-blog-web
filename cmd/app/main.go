@@ -7,16 +7,20 @@ import (
 	"go-blog-web/internal/services"
 	"go-blog-web/internal/storage/memory"
 	"go-blog-web/internal/utils"
+	"log"
+	"log/slog"
 	"net/http"
 )
 
 func main() {
-	log := utils.NewLogger()
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		log.Error("Ошибка загрузки настроек", utils.Err(err))
+		log.Fatalln("Ошибка загрузки настроек", err)
 		return
 	}
+	log := utils.New(cfg.Env)
+	log.Debug("Конфигурация сервиса", slog.Any("config", *cfg))
+	log.Debug("Загрузка cors", slog.Any("Cors", cfg.Cors()))
 
 	storage := memory.New()
 	service := services.New(storage)
@@ -39,7 +43,7 @@ func main() {
 	mux.HandleFunc("DELETE /api/secure/posts/{id}/", middleware.AuthAdminMiddleware(service, handler.DeletePost))
 	mux.HandleFunc("PUT /api/secure/users/{id}/", middleware.AuthAdminMiddleware(service, handler.UpdateUserHandler))
 
-	err = http.ListenAndServe(config.GetServerAddress(cfg), middleware.CORSMiddleware(cfg, mux))
+	err = http.ListenAndServe(cfg.ServerAddress(), middleware.CORSMiddleware(cfg, mux))
 	if err != nil {
 		log.Error("Ошибка запуска сервера", utils.Err(err))
 		return

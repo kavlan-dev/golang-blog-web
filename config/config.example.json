@@ -1,0 +1,16 @@
+{
+    "env": "dev", // local, dev, prod
+    "admin": {
+        "username": "admin",
+        "password": "admin",
+        "email": "admin@email.com"
+    },
+    "server": {
+        "host": "localhost",
+        "port": 8080
+    },
+    "cors_allowed_origin": [
+        "localhost:5500",
+        "localhost:8081"
+    ]
+}

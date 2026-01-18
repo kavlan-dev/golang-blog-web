@@ -8,7 +8,7 @@ import (
 
 type UsersStorage interface {
 	CreateUser(user *models.User) error
-	GetUserByUsername(username string) (*models.User, error)
+	UserByUsername(username string) (*models.User, error)
 	UpdateUser(id uint, updateUser *models.User) error
 }
 
@@ -20,12 +20,12 @@ func (s *Service) CreateUser(newUser *models.User) error {
 	return s.storage.CreateUser(newUser)
 }
 
-func (s *Service) getUserByUsername(username string) (*models.User, error) {
-	return s.storage.GetUserByUsername(username)
+func (s *Service) userByUsername(username string) (*models.User, error) {
+	return s.storage.UserByUsername(username)
 }
 
 func (s *Service) AuthenticateUser(username, password string) (*models.User, error) {
-	user, err := s.getUserByUsername(username)
+	user, err := s.userByUsername(username)
 	if err != nil {
 		return nil, err
 	}
@@ -39,9 +39,9 @@ func (s *Service) AuthenticateUser(username, password string) (*models.User, err
 
 func (s *Service) CreateFirstAdmin(cfg *config.Config) error {
 	return s.storage.CreateUser(&models.User{
-		Username: cfg.AdminUsername,
-		Password: cfg.AdminPassword,
-		Email:    cfg.AdminEmail,
+		Username: cfg.Admin.Username,
+		Password: cfg.Admin.Password,
+		Email:    cfg.Admin.Email,
 		Role:     "admin",
 	})
 }

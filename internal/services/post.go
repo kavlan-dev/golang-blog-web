@@ -18,11 +18,11 @@ func (s *Service) CreatePost(newPost *models.Post) error {
 	return s.storage.CreatePost(newPost)
 }
 
-func (s *Service) GetAllPosts() *[]models.Post {
+func (s *Service) AllPosts() *[]models.Post {
 	return s.storage.FindPosts()
 }
 
-func (s *Service) GetPostByID(id uint) (*models.Post, error) {
+func (s *Service) PostByID(id uint) (*models.Post, error) {
 	return s.storage.FindPostById(id)
 }
 

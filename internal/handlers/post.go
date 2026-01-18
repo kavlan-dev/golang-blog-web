@@ -11,8 +11,8 @@ import (
 
 type PostsService interface {
 	CreatePost(newPost *models.Post) error
-	GetAllPosts() *[]models.Post
-	GetPostByID(id uint) (*models.Post, error)
+	AllPosts() *[]models.Post
+	PostByID(id uint) (*models.Post, error)
 	UpdatePost(id uint, updatePost *models.Post) error
 	DeletePost(id uint) error
 }
@@ -55,7 +55,7 @@ func (h *Handler) Posts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts := h.service.GetAllPosts()
+	posts := h.service.AllPosts()
 
 	h.log.Info("Получены все записи")
 	w.Header().Set("Content-Type", "application/json")
@@ -77,7 +77,7 @@ func (h *Handler) PostById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	post, err := h.service.GetPostByID(uint(id))
+	post, err := h.service.PostByID(uint(id))
 	if err != nil {
 		h.log.Error("Ошибка при попытке получить запись", utils.Err(err))
 		http.Error(w, err.Error(), http.StatusNotFound)

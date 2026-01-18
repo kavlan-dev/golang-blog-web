@@ -35,7 +35,7 @@ func (s *Storage) CreateUser(newUser *models.User) error {
 	return nil
 }
 
-func (s *Storage) GetUserByUsername(username string) (*models.User, error) {
+func (s *Storage) UserByUsername(username string) (*models.User, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
