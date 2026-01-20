@@ -13,6 +13,7 @@ type PostsService interface {
 	CreatePost(newPost *models.Post) error
 	AllPosts() *[]models.Post
 	PostByID(id uint) (*models.Post, error)
+	PostByTitle(title string) (*models.Post, error)
 	UpdatePost(id uint, updatePost *models.Post) error
 	DeletePost(id uint) error
 }
@@ -48,6 +49,7 @@ func (h *Handler) CreatePost(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newPost)
 }
 
+// TODO Реализовать сортировку и фильтрацию
 func (h *Handler) Posts(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		h.log.Warn("Использован не подходящий метод", slog.String("method", r.Method))
@@ -57,7 +59,14 @@ func (h *Handler) Posts(w http.ResponseWriter, r *http.Request) {
 
 	posts := h.service.AllPosts()
 
-	h.log.Info("Получены все записи")
+	if len(*posts) == 0 {
+		h.log.Warn("Список записей пуст")
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response{"message": "Записи отсутствуют"})
+		return
+	}
+
+	h.log.Info("Получены все записи", slog.Int("count", len(*posts)))
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(posts)
 }
@@ -85,6 +94,32 @@ func (h *Handler) PostById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.log.Info("Успешно получена запись", slog.Int("post id", id))
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(post)
+}
+
+func (h *Handler) PostByTitle(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		h.log.Warn("Использован не подходящий метод", slog.String("method", r.Method))
+		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
+		return
+	}
+
+	title := r.PathValue("title")
+	if title == "" {
+		h.log.Error("Не указан заголовок")
+		http.Error(w, "Заголовок не может быть пустым", http.StatusBadRequest)
+		return
+	}
+
+	post, err := h.service.PostByTitle(title)
+	if err != nil {
+		h.log.Error("Ошибка при попытке получить запись", utils.Err(err))
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	h.log.Info("Успешно получена запись", slog.String("post title", title))
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(post)
 }

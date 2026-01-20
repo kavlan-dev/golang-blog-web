@@ -6,6 +6,7 @@ type PostsStorage interface {
 	CreatePost(newPost *models.Post) error
 	FindPosts() *[]models.Post
 	FindPostById(id uint) (*models.Post, error)
+	FindPostByTitle(title string) (*models.Post, error)
 	UpdatePost(id uint, updatePost *models.Post) error
 	DeletePost(id uint) error
 }
@@ -24,6 +25,10 @@ func (s *Service) AllPosts() *[]models.Post {
 
 func (s *Service) PostByID(id uint) (*models.Post, error) {
 	return s.storage.FindPostById(id)
+}
+
+func (s *Service) PostByTitle(title string) (*models.Post, error) {
+	return s.storage.FindPostByTitle(title)
 }
 
 func (s *Service) UpdatePost(id uint, updatePost *models.Post) error {

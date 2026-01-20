@@ -32,16 +32,17 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /health/", handler.HealthCheck)
-	mux.HandleFunc("GET /api/posts/", handler.Posts)
-	mux.HandleFunc("GET /api/posts/{id}/", handler.PostById)
-	mux.HandleFunc("POST /api/auth/register/", handler.CreateUser)
+	mux.HandleFunc("GET /health", handler.HealthCheck)
+	mux.HandleFunc("GET /api/posts", handler.Posts)
+	mux.HandleFunc("GET /api/posts/{id}", handler.PostById)
+	mux.HandleFunc("GET /api/posts/title/{title}", handler.PostByTitle)
+	mux.HandleFunc("POST /api/auth/register", handler.CreateUser)
 
-	mux.HandleFunc("POST /api/posts/", middleware.AuthMiddleware(service, handler.CreatePost))
+	mux.HandleFunc("POST /api/posts", middleware.AuthMiddleware(service, handler.CreatePost))
 
-	mux.HandleFunc("PUT /api/secure/posts/{id}/", middleware.AuthAdminMiddleware(service, handler.UpdatePost))
-	mux.HandleFunc("DELETE /api/secure/posts/{id}/", middleware.AuthAdminMiddleware(service, handler.DeletePost))
-	mux.HandleFunc("PUT /api/secure/users/{id}/", middleware.AuthAdminMiddleware(service, handler.UpdateUser))
+	mux.HandleFunc("PUT /api/posts/{id}", middleware.AuthAdminMiddleware(service, handler.UpdatePost))
+	mux.HandleFunc("DELETE /api/posts/{id}", middleware.AuthAdminMiddleware(service, handler.DeletePost))
+	mux.HandleFunc("PUT /api/users/{id}", middleware.AuthAdminMiddleware(service, handler.UpdateUser))
 
 	err = http.ListenAndServe(cfg.ServerAddress(), middleware.CORSMiddleware(cfg, mux))
 	if err != nil {

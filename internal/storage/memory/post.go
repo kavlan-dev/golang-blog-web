@@ -60,6 +60,19 @@ func (s *Storage) FindPostById(id uint) (*models.Post, error) {
 	return post, nil
 }
 
+func (s *Storage) FindPostByTitle(title string) (*models.Post, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	for _, post := range s.posts {
+		if post.Title == title {
+			return post, nil
+		}
+	}
+
+	return nil, fmt.Errorf("запись с заголовком %s не найдена", title)
+}
+
 func (s *Storage) UpdatePost(id uint, updatePost *models.Post) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()

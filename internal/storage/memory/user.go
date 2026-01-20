@@ -16,6 +16,7 @@ func (s *Storage) isUserUnique(username, email string, excludeID uint) bool {
 	return true
 }
 
+// TODO Добавить хеширование пароля
 func (s *Storage) CreateUser(newUser *models.User) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()

@@ -37,6 +37,8 @@ func (s *Service) AuthenticateUser(username, password string) (*models.User, err
 	return user, nil
 }
 
+// Создает первого администратора для последующего использования эндпоинтов доступных только администратору
+// Данные для входа устанавливаются в конфигурационном файле JSON
 func (s *Service) CreateFirstAdmin(cfg *config.Config) error {
 	return s.storage.CreateUser(&models.User{
 		Username: cfg.Admin.Username,
