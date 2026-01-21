@@ -9,14 +9,19 @@ import (
 
 func (s *Storage) isUserUnique(username, email string, excludeID uint) bool {
 	for id, user := range s.users {
-		if id != excludeID && strings.EqualFold(strings.TrimSpace(user.Username), strings.TrimSpace(username)) && strings.EqualFold(strings.TrimSpace(user.Email), strings.TrimSpace(email)) {
+		if id == excludeID {
+			continue
+		}
+		if strings.EqualFold(strings.TrimSpace(user.Username), strings.TrimSpace(username)) {
+			return false
+		}
+		if strings.EqualFold(strings.TrimSpace(user.Email), strings.TrimSpace(email)) {
 			return false
 		}
 	}
 	return true
 }
 
-// TODO Добавить хеширование пароля
 func (s *Storage) CreateUser(newUser *models.User) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()

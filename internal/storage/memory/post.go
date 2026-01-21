@@ -22,8 +22,7 @@ func (s *Storage) CreatePost(newPost *models.Post) error {
 	defer s.mu.Unlock()
 
 	newPost.ID = s.nextPostId
-	ok := s.isTitleUnique(newPost.Title, newPost.ID)
-	if ok != true {
+	if !s.isTitleUnique(newPost.Title, newPost.ID) {
 		return fmt.Errorf("Запись с таким заголовком уже существует")
 	}
 

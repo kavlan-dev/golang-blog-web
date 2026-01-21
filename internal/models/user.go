@@ -37,5 +37,8 @@ func (u *User) Validate() error {
 	if strings.TrimSpace(u.Email) == "" {
 		return fmt.Errorf("Укажите почту")
 	}
+	if !strings.Contains(strings.TrimSpace(u.Email), "@") {
+		return fmt.Errorf("Некорректный формат email")
+	}
 	return nil
 }

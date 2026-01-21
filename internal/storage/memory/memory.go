@@ -17,5 +17,6 @@ func New() *Storage {
 	return &Storage{
 		posts: make(map[uint]*models.Post),
 		users: make(map[uint]*models.User),
+		mu:    sync.Mutex{},
 	}
 }
