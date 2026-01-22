@@ -42,3 +42,18 @@ func (u *User) Validate() error {
 	}
 	return nil
 }
+
+func (u *User) IsUserUnique(users []User) bool {
+	for id, user := range users {
+		if id == int(u.ID) {
+			continue
+		}
+		if strings.EqualFold(strings.TrimSpace(user.Username), strings.TrimSpace(u.Username)) {
+			return false
+		}
+		if strings.EqualFold(strings.TrimSpace(user.Email), strings.TrimSpace(u.Email)) {
+			return false
+		}
+	}
+	return true
+}

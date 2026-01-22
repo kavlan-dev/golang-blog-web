@@ -38,3 +38,15 @@ func (p *Post) Validate() error {
 	}
 	return nil
 }
+
+func (p *Post) IsTitleUnique(posts []Post) bool {
+	for id, post := range posts {
+		if id == int(p.ID) {
+			continue
+		}
+		if strings.EqualFold(strings.TrimSpace(post.Title), strings.TrimSpace(p.Title)) {
+			return false
+		}
+	}
+	return true
+}

@@ -1,12 +1,11 @@
 package services
 
 import (
-	"crypto/rand"
-	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"go-blog-web/internal/config"
 	"go-blog-web/internal/models"
+	"go-blog-web/internal/utils"
 )
 
 type UsersStorage interface {
@@ -20,7 +19,7 @@ func (s *Service) CreateUser(newUser *models.User) error {
 		return err
 	}
 
-	newUser.Password = hashPassword(newUser.Password)
+	newUser.Password = utils.HashPassword(newUser.Password)
 
 	return s.storage.CreateUser(newUser)
 }
@@ -46,7 +45,7 @@ func (s *Service) AuthenticateUser(username, password string) (*models.User, err
 		return nil, fmt.Errorf("ошибка декодирования соли")
 	}
 
-	hashedPassword := hashPasswordWithSalt(password, salt)
+	hashedPassword := utils.HashPasswordWithSalt(password, salt)
 	if user.Password != hashedPassword {
 		return nil, fmt.Errorf("Не верный пароль")
 	}
@@ -59,7 +58,7 @@ func (s *Service) AuthenticateUser(username, password string) (*models.User, err
 func (s *Service) CreateFirstAdmin(cfg *config.Config) error {
 	admin := &models.User{
 		Username: cfg.Admin.Username,
-		Password: hashPassword(cfg.Admin.Password),
+		Password: utils.HashPassword(cfg.Admin.Password),
 		Email:    cfg.Admin.Email,
 		Role:     "admin",
 	}
@@ -72,26 +71,4 @@ func (s *Service) UpdateUser(id uint, updateUser *models.User) error {
 	}
 
 	return s.storage.UpdateUser(id, updateUser)
-}
-
-func hashPassword(password string) string {
-	salt := make([]byte, 16)
-	_, err := rand.Read(salt)
-	if err != nil {
-		return hashPasswordWithSalt(password, []byte{})
-	}
-	return hashPasswordWithSalt(password, salt)
-}
-
-func hashPasswordWithSalt(password string, salt []byte) string {
-	h := sha256.New()
-	h.Write(salt)
-	h.Write([]byte(password))
-	hashed := h.Sum(nil)
-
-	result := make([]byte, len(salt)+len(hashed))
-	copy(result, salt)
-	copy(result[len(salt):], hashed)
-
-	return hex.EncodeToString(result)
 }

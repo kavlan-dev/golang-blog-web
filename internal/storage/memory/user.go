@@ -3,32 +3,28 @@ package memory
 import (
 	"fmt"
 	"go-blog-web/internal/models"
-	"strings"
 	"time"
 )
 
-func (s *Storage) isUserUnique(username, email string, excludeID uint) bool {
-	for id, user := range s.users {
-		if id == excludeID {
-			continue
-		}
-		if strings.EqualFold(strings.TrimSpace(user.Username), strings.TrimSpace(username)) {
-			return false
-		}
-		if strings.EqualFold(strings.TrimSpace(user.Email), strings.TrimSpace(email)) {
-			return false
-		}
+func (s *Storage) FindUsers() *[]models.User {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	allUsers := make([]models.User, 0, len(s.users))
+	for _, user := range s.users {
+		allUsers = append(allUsers, *user)
 	}
-	return true
+
+	return &allUsers
 }
 
 func (s *Storage) CreateUser(newUser *models.User) error {
+	users := s.FindUsers()
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	newUser.ID = s.nextUserId
-	ok := s.isUserUnique(newUser.Username, newUser.Email, newUser.ID)
-	if !ok {
+	if !newUser.IsUserUnique(*users) {
 		return fmt.Errorf("пользователь с таким именем или почтой уже существует")
 	}
 
@@ -54,6 +50,7 @@ func (s *Storage) UserByUsername(username string) (*models.User, error) {
 }
 
 func (s *Storage) UpdateUser(id uint, updateUser *models.User) error {
+	users := s.FindUsers()
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -62,7 +59,7 @@ func (s *Storage) UpdateUser(id uint, updateUser *models.User) error {
 		return fmt.Errorf("пользователь с id %d не найден", id)
 	}
 
-	if !s.isUserUnique(user.Username, user.Email, id) {
+	if !user.IsUserUnique(*users) {
 		return fmt.Errorf("пользователь с таким именем или почтой уже существует")
 	}
 

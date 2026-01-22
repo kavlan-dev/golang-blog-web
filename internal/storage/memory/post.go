@@ -4,25 +4,16 @@ import (
 	"errors"
 	"fmt"
 	"go-blog-web/internal/models"
-	"strings"
 	"time"
 )
 
-func (s *Storage) isTitleUnique(title string, excludeID uint) bool {
-	for id, post := range s.posts {
-		if id != excludeID && strings.EqualFold(strings.TrimSpace(post.Title), strings.TrimSpace(title)) {
-			return false
-		}
-	}
-	return true
-}
-
 func (s *Storage) CreatePost(newPost *models.Post) error {
+	posts := s.FindPosts()
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	newPost.ID = s.nextPostId
-	if !s.isTitleUnique(newPost.Title, newPost.ID) {
+	if !newPost.IsTitleUnique(*posts) {
 		return fmt.Errorf("Запись с таким заголовком уже существует")
 	}
 
@@ -73,6 +64,7 @@ func (s *Storage) FindPostByTitle(title string) (*models.Post, error) {
 }
 
 func (s *Storage) UpdatePost(id uint, updatePost *models.Post) error {
+	posts := s.FindPosts()
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -81,7 +73,7 @@ func (s *Storage) UpdatePost(id uint, updatePost *models.Post) error {
 		return fmt.Errorf("запись с id %d не найдена", id)
 	}
 
-	if !s.isTitleUnique(post.Title, id) {
+	if !post.IsTitleUnique(*posts) {
 		return errors.New("запись с таким заголовком уже существует")
 	}
 
