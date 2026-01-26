@@ -8,24 +8,24 @@ import (
 
 type response map[string]any
 
-type ServicesInterface interface {
-	PostsService
-	UserService
+type servicesInterface interface {
+	postsService
+	userService
 }
 
-type Handler struct {
-	service ServicesInterface
+type handler struct {
+	service servicesInterface
 	log     *slog.Logger
 }
 
-func New(service ServicesInterface, log *slog.Logger) *Handler {
-	return &Handler{
+func New(service servicesInterface, log *slog.Logger) *handler {
+	return &handler{
 		service: service,
 		log:     log,
 	}
 }
 
-func (h *Handler) HealthCheck(w http.ResponseWriter, r *http.Request) {
+func (h *handler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response{

@@ -1,11 +1,15 @@
 package middleware
 
 import (
-	"go-blog-web/internal/services"
+	"go-blog-web/internal/models"
 	"net/http"
 )
 
-func AuthMiddleware(service *services.Service, next http.HandlerFunc) http.HandlerFunc {
+type userService interface {
+	AuthenticateUser(username, password string) (*models.User, error)
+}
+
+func AuthMiddleware(service userService, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		name, pass, ok := r.BasicAuth()
 		if !ok {

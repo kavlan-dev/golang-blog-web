@@ -8,13 +8,13 @@ import (
 	"go-blog-web/internal/utils"
 )
 
-type UsersStorage interface {
+type usersStorage interface {
 	CreateUser(user *models.User) error
 	UserByUsername(username string) (*models.User, error)
 	UpdateUser(id uint, updateUser *models.User) error
 }
 
-func (s *Service) CreateUser(newUser *models.User) error {
+func (s *service) CreateUser(newUser *models.User) error {
 	if err := newUser.Validate(); err != nil {
 		return err
 	}
@@ -24,11 +24,11 @@ func (s *Service) CreateUser(newUser *models.User) error {
 	return s.storage.CreateUser(newUser)
 }
 
-func (s *Service) userByUsername(username string) (*models.User, error) {
+func (s *service) userByUsername(username string) (*models.User, error) {
 	return s.storage.UserByUsername(username)
 }
 
-func (s *Service) AuthenticateUser(username, password string) (*models.User, error) {
+func (s *service) AuthenticateUser(username, password string) (*models.User, error) {
 	user, err := s.userByUsername(username)
 	if err != nil {
 		return nil, err
@@ -55,7 +55,7 @@ func (s *Service) AuthenticateUser(username, password string) (*models.User, err
 
 // Создает первого администратора для последующего использования эндпоинтов доступных только администратору
 // Данные для входа устанавливаются в конфигурационном файле JSON
-func (s *Service) CreateFirstAdmin(cfg *config.Config) error {
+func (s *service) CreateFirstAdmin(cfg *config.Config) error {
 	admin := &models.User{
 		Username: cfg.Admin.Username,
 		Password: utils.HashPassword(cfg.Admin.Password),
@@ -65,7 +65,7 @@ func (s *Service) CreateFirstAdmin(cfg *config.Config) error {
 	return s.storage.CreateUser(admin)
 }
 
-func (s *Service) UpdateUser(id uint, updateUser *models.User) error {
+func (s *service) UpdateUser(id uint, updateUser *models.User) error {
 	if err := updateUser.Validate(); err != nil {
 		return err
 	}

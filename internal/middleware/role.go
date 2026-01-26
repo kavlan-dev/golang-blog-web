@@ -1,11 +1,10 @@
 package middleware
 
 import (
-	"go-blog-web/internal/services"
 	"net/http"
 )
 
-func AuthAdminMiddleware(service *services.Service, next http.HandlerFunc) http.HandlerFunc {
+func AuthAdminMiddleware(service userService, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		name, pass, ok := r.BasicAuth()
 		if !ok {

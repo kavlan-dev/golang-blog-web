@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func (s *Storage) FindUsers() *[]models.User {
+func (s *storage) FindUsers() *[]models.User {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -18,7 +18,7 @@ func (s *Storage) FindUsers() *[]models.User {
 	return &allUsers
 }
 
-func (s *Storage) CreateUser(newUser *models.User) error {
+func (s *storage) CreateUser(newUser *models.User) error {
 	users := s.FindUsers()
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -37,7 +37,7 @@ func (s *Storage) CreateUser(newUser *models.User) error {
 	return nil
 }
 
-func (s *Storage) UserByUsername(username string) (*models.User, error) {
+func (s *storage) UserByUsername(username string) (*models.User, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -49,7 +49,7 @@ func (s *Storage) UserByUsername(username string) (*models.User, error) {
 	return nil, fmt.Errorf("Пользователь не найден")
 }
 
-func (s *Storage) UpdateUser(id uint, updateUser *models.User) error {
+func (s *storage) UpdateUser(id uint, updateUser *models.User) error {
 	users := s.FindUsers()
 	s.mu.Lock()
 	defer s.mu.Unlock()

@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func (s *Storage) CreatePost(newPost *models.Post) error {
+func (s *storage) CreatePost(newPost *models.Post) error {
 	posts := s.FindPosts()
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -26,7 +26,7 @@ func (s *Storage) CreatePost(newPost *models.Post) error {
 	return nil
 }
 
-func (s *Storage) FindPosts() *[]models.Post {
+func (s *storage) FindPosts() *[]models.Post {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -38,7 +38,7 @@ func (s *Storage) FindPosts() *[]models.Post {
 	return &allPosts
 }
 
-func (s *Storage) FindPostById(id uint) (*models.Post, error) {
+func (s *storage) FindPostById(id uint) (*models.Post, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -50,7 +50,7 @@ func (s *Storage) FindPostById(id uint) (*models.Post, error) {
 	return post, nil
 }
 
-func (s *Storage) FindPostByTitle(title string) (*models.Post, error) {
+func (s *storage) FindPostByTitle(title string) (*models.Post, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -63,7 +63,7 @@ func (s *Storage) FindPostByTitle(title string) (*models.Post, error) {
 	return nil, fmt.Errorf("запись с заголовком %s не найдена", title)
 }
 
-func (s *Storage) UpdatePost(id uint, updatePost *models.Post) error {
+func (s *storage) UpdatePost(id uint, updatePost *models.Post) error {
 	posts := s.FindPosts()
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -87,7 +87,7 @@ func (s *Storage) UpdatePost(id uint, updatePost *models.Post) error {
 	return nil
 }
 
-func (s *Storage) DeletePost(id uint) error {
+func (s *storage) DeletePost(id uint) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 

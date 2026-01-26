@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-type PostsService interface {
+type postsService interface {
 	CreatePost(newPost *models.Post) error
 	AllPosts() *[]models.Post
 	PostByID(id uint) (*models.Post, error)
@@ -18,7 +18,7 @@ type PostsService interface {
 	DeletePost(id uint) error
 }
 
-func (h *Handler) CreatePost(w http.ResponseWriter, r *http.Request) {
+func (h *handler) CreatePost(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		h.log.Warn("Использован не подходящий метод", slog.String("method", r.Method))
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
@@ -51,7 +51,7 @@ func (h *Handler) CreatePost(w http.ResponseWriter, r *http.Request) {
 }
 
 // TODO Реализовать сортировку и фильтрацию
-func (h *Handler) Posts(w http.ResponseWriter, r *http.Request) {
+func (h *handler) Posts(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		h.log.Warn("Использован не подходящий метод", slog.String("method", r.Method))
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
@@ -72,7 +72,7 @@ func (h *Handler) Posts(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(posts)
 }
 
-func (h *Handler) PostById(w http.ResponseWriter, r *http.Request) {
+func (h *handler) PostById(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		h.log.Warn("Использован не подходящий метод", slog.String("method", r.Method))
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
@@ -99,7 +99,7 @@ func (h *Handler) PostById(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(post)
 }
 
-func (h *Handler) PostByTitle(w http.ResponseWriter, r *http.Request) {
+func (h *handler) PostByTitle(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		h.log.Warn("Использован не подходящий метод", slog.String("method", r.Method))
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
@@ -125,7 +125,7 @@ func (h *Handler) PostByTitle(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(post)
 }
 
-func (h *Handler) UpdatePost(w http.ResponseWriter, r *http.Request) {
+func (h *handler) UpdatePost(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
 		h.log.Warn("Использован не подходящий метод", slog.String("method", r.Method))
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
@@ -164,7 +164,7 @@ func (h *Handler) UpdatePost(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(updatePost)
 }
 
-func (h *Handler) DeletePost(w http.ResponseWriter, r *http.Request) {
+func (h *handler) DeletePost(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		h.log.Warn("Использован не подходящий метод", slog.String("method", r.Method))
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)

@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-type Storage struct {
+type storage struct {
 	posts      map[uint]*models.Post
 	users      map[uint]*models.User
 	mu         sync.Mutex
@@ -13,8 +13,8 @@ type Storage struct {
 	nextUserId uint
 }
 
-func New() *Storage {
-	return &Storage{
+func New() *storage {
+	return &storage{
 		posts: make(map[uint]*models.Post),
 		users: make(map[uint]*models.User),
 		mu:    sync.Mutex{},

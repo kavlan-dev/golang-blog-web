@@ -1,13 +1,36 @@
 package routers
 
 import (
-	"go-blog-web/internal/handlers"
 	"go-blog-web/internal/middleware"
-	"go-blog-web/internal/services"
+	"go-blog-web/internal/models"
 	"net/http"
 )
 
-func SetupRoutes(handler *handlers.Handler, service *services.Service) *http.ServeMux {
+type handlerInterface interface {
+	postHandler
+	userHandler
+	HealthCheck(w http.ResponseWriter, r *http.Request)
+}
+
+type userService interface {
+	AuthenticateUser(username, password string) (*models.User, error)
+}
+
+type postHandler interface {
+	CreatePost(w http.ResponseWriter, r *http.Request)
+	Posts(w http.ResponseWriter, r *http.Request)
+	PostById(w http.ResponseWriter, r *http.Request)
+	PostByTitle(w http.ResponseWriter, r *http.Request)
+	UpdatePost(w http.ResponseWriter, r *http.Request)
+	DeletePost(w http.ResponseWriter, r *http.Request)
+}
+
+type userHandler interface {
+	CreateUser(w http.ResponseWriter, r *http.Request)
+	UpdateUser(w http.ResponseWriter, r *http.Request)
+}
+
+func SetupRoutes(handler handlerInterface, service userService) *http.ServeMux {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /health", handler.HealthCheck)

@@ -9,12 +9,12 @@ import (
 	"strconv"
 )
 
-type UserService interface {
+type userService interface {
 	CreateUser(newUser *models.User) error
 	UpdateUser(id uint, updateUser *models.User) error
 }
 
-func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
+func (h *handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		h.log.Warn("Использован не подходящий метод", slog.String("method", r.Method))
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
@@ -47,7 +47,7 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newUser)
 }
 
-func (h *Handler) UpdateUser(w http.ResponseWriter, r *http.Request) {
+func (h *handler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		h.log.Warn("Использован не подходящий метод", slog.String("method", r.Method))
 		http.Error(w, "метод не поддерживается", http.StatusMethodNotAllowed)
