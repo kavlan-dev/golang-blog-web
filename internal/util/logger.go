@@ -1,11 +1,11 @@
-package utils
+package util
 
 import (
 	"log/slog"
 	"os"
 )
 
-func New(env string) *slog.Logger {
+func InitLogger(env string) *slog.Logger {
 	var log *slog.Logger
 
 	switch env {

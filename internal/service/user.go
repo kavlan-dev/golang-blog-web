@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"go-blog-web/internal/config"
 	"go-blog-web/internal/model"
-	"go-blog-web/internal/utils"
+	"go-blog-web/internal/util"
 )
 
 type userStorage interface {
@@ -19,7 +19,7 @@ func (s *service) CreateUser(newUser *model.User) error {
 		return err
 	}
 
-	newUser.Password = utils.HashPassword(newUser.Password)
+	newUser.Password = util.HashPassword(newUser.Password)
 
 	return s.storage.CreateUser(newUser)
 }
@@ -45,7 +45,7 @@ func (s *service) AuthenticateUser(username, password string) (*model.User, erro
 		return nil, fmt.Errorf("ошибка декодирования соли")
 	}
 
-	hashedPassword := utils.HashPasswordWithSalt(password, salt)
+	hashedPassword := util.HashPasswordWithSalt(password, salt)
 	if user.Password != hashedPassword {
 		return nil, fmt.Errorf("Не верный пароль")
 	}
@@ -58,7 +58,7 @@ func (s *service) AuthenticateUser(username, password string) (*model.User, erro
 func (s *service) CreateFirstAdmin(cfg *config.Config) error {
 	admin := &model.User{
 		Username: cfg.Admin.Username,
-		Password: utils.HashPassword(cfg.Admin.Password),
+		Password: util.HashPassword(cfg.Admin.Password),
 		Email:    cfg.Admin.Email,
 		Role:     "admin",
 	}

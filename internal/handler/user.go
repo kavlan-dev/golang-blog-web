@@ -3,7 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"go-blog-web/internal/model"
-	"go-blog-web/internal/utils"
+	"go-blog-web/internal/util"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -23,7 +23,7 @@ func (h *handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	var req model.RegisterRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		h.log.Error("Ошибка в теле запроса", utils.Err(err))
+		h.log.Error("Ошибка в теле запроса", util.Err(err))
 		http.Error(w, "некорректный JSON", http.StatusBadRequest)
 		return
 	}
@@ -36,7 +36,7 @@ func (h *handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		// Role: req.Role,
 	}
 	if err := h.service.CreateUser(newUser); err != nil {
-		h.log.Error("Ошибка при создании пользователя", utils.Err(err))
+		h.log.Error("Ошибка при создании пользователя", util.Err(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -57,14 +57,14 @@ func (h *handler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	idStr := r.PathValue("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		h.log.Error("Не верный ввод id", utils.Err(err))
+		h.log.Error("Не верный ввод id", util.Err(err))
 		http.Error(w, "некорректный id", http.StatusBadRequest)
 		return
 	}
 
 	var req model.UpdateUserRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		h.log.Error("Ошибка в теле запроса", utils.Err(err))
+		h.log.Error("Ошибка в теле запроса", util.Err(err))
 		http.Error(w, "некорректный JSON", http.StatusBadRequest)
 		return
 	}
@@ -74,7 +74,7 @@ func (h *handler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.service.UpdateUser(uint(id), updateUser); err != nil {
-		h.log.Error("Ошибка при обновлении пользователя", utils.Err(err))
+		h.log.Error("Ошибка при обновлении пользователя", util.Err(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}

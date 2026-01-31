@@ -3,7 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"go-blog-web/internal/model"
-	"go-blog-web/internal/utils"
+	"go-blog-web/internal/util"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -27,7 +27,7 @@ func (h *handler) CreatePost(w http.ResponseWriter, r *http.Request) {
 
 	var req model.PostRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		h.log.Error("Ошибка в теле запроса", utils.Err(err))
+		h.log.Error("Ошибка в теле запроса", util.Err(err))
 		http.Error(w, "некорректный JSON", http.StatusBadRequest)
 		return
 	}
@@ -39,7 +39,7 @@ func (h *handler) CreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.service.CreatePost(newPost); err != nil {
-		h.log.Error("Ошибка при создании записи", utils.Err(err))
+		h.log.Error("Ошибка при создании записи", util.Err(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -82,14 +82,14 @@ func (h *handler) PostById(w http.ResponseWriter, r *http.Request) {
 	idStr := r.PathValue("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		h.log.Error("Не верный ввод id", utils.Err(err))
+		h.log.Error("Не верный ввод id", util.Err(err))
 		http.Error(w, "некорректный id", http.StatusBadRequest)
 		return
 	}
 
 	post, err := h.service.PostByID(uint(id))
 	if err != nil {
-		h.log.Error("Ошибка при попытке получить запись", utils.Err(err))
+		h.log.Error("Ошибка при попытке получить запись", util.Err(err))
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
@@ -115,7 +115,7 @@ func (h *handler) PostByTitle(w http.ResponseWriter, r *http.Request) {
 
 	post, err := h.service.PostByTitle(title)
 	if err != nil {
-		h.log.Error("Ошибка при попытке получить запись", utils.Err(err))
+		h.log.Error("Ошибка при попытке получить запись", util.Err(err))
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
@@ -135,14 +135,14 @@ func (h *handler) UpdatePost(w http.ResponseWriter, r *http.Request) {
 	idStr := r.PathValue("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		h.log.Error("Не верный ввод id", utils.Err(err))
+		h.log.Error("Не верный ввод id", util.Err(err))
 		http.Error(w, "некорректный id", http.StatusBadRequest)
 		return
 	}
 
 	var req model.PostRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		h.log.Error("Ошибка в теле запроса", utils.Err(err))
+		h.log.Error("Ошибка в теле запроса", util.Err(err))
 		http.Error(w, "некорректный JSON", http.StatusBadRequest)
 		return
 	}
@@ -154,7 +154,7 @@ func (h *handler) UpdatePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.service.UpdatePost(uint(id), updatePost); err != nil {
-		h.log.Error("Ошибка при обновлении записи", utils.Err(err))
+		h.log.Error("Ошибка при обновлении записи", util.Err(err))
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
@@ -174,14 +174,14 @@ func (h *handler) DeletePost(w http.ResponseWriter, r *http.Request) {
 	idStr := r.PathValue("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		h.log.Error("Не верный ввод id", utils.Err(err))
+		h.log.Error("Не верный ввод id", util.Err(err))
 		http.Error(w, "некорректный id", http.StatusBadRequest)
 		return
 	}
 
 	err = h.service.DeletePost(uint(id))
 	if err != nil {
-		h.log.Error("Ошибка при удалении записи", utils.Err(err))
+		h.log.Error("Ошибка при удалении записи", util.Err(err))
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}

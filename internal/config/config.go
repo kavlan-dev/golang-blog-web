@@ -23,7 +23,7 @@ type Config struct {
 	CORSAllowedOrigin []string `json:"cors_allowed_origin"`
 }
 
-func LoadConfig() (*Config, error) {
+func InitConfig() (*Config, error) {
 	pathCmd := flag.String(
 		"p",
 		"config/config.json",

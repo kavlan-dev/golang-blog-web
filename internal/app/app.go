@@ -8,7 +8,7 @@ import (
 	"go-blog-web/internal/router"
 	"go-blog-web/internal/service"
 	"go-blog-web/internal/storage/memory"
-	"go-blog-web/internal/utils"
+	"go-blog-web/internal/util"
 	"log"
 	"log/slog"
 	"net/http"
@@ -19,19 +19,19 @@ import (
 )
 
 func Run() {
-	cfg, err := config.LoadConfig()
+	cfg, err := config.InitConfig()
 	if err != nil {
 		log.Fatalln("Ошибка загрузки настроек", err)
 		return
 	}
-	log := utils.New(cfg.Env)
+	log := util.InitLogger(cfg.Env)
 
 	storage := memory.NewStorage()
 	service := service.NewService(storage)
 	handler := handler.NewHandler(service, log)
 
 	if err := service.CreateFirstAdmin(cfg); err != nil {
-		log.Error("Не удалось создать администратора", utils.Err(err))
+		log.Error("Не удалось создать администратора", util.Err(err))
 		return
 	}
 
@@ -46,7 +46,7 @@ func Run() {
 	go func() {
 		log.Info("Запуск сервера", slog.String("address", cfg.ServerAddress()))
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Error("Ошибка запуска сервера", utils.Err(err))
+			log.Error("Ошибка запуска сервера", util.Err(err))
 		}
 	}()
 
@@ -57,7 +57,7 @@ func Run() {
 	defer cancel()
 
 	if err := server.Shutdown(ctx); err != nil {
-		log.Error("Ошибка при плавном завершении сервера", utils.Err(err))
+		log.Error("Ошибка при плавном завершении сервера", util.Err(err))
 		return
 	}
 
